@@ -1,4 +1,7 @@
 <template>
+    <div class="top-nav bg-black">
+        <router-link to="/admincp" class="nav-link text-right px-3 text-white">AdminCP</router-link>
+    </div>
     <div class="nav-bar bg-light border-bottom">
         <div class="navbar container align-items-center">
             <div class="logo-holder me-lg-auto">
