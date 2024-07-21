@@ -26,14 +26,8 @@
         </tbody>
       </v-table>
 
-      <v-alert v-else-if="!loading" type="info" class="mt-4"
-        >No users found.</v-alert
-      >
-      <v-progress-circular
-        v-if="loading"
-        indeterminate
-        color="primary"
-      ></v-progress-circular>
+      <v-alert v-else-if="!loading" type="info" class="mt-4">No users found.</v-alert>
+      <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
       <v-alert v-if="error" type="error" class="mt-4">{{ error }}</v-alert>
 
       <div class="mt-4">
@@ -64,30 +58,48 @@ export default {
 
   methods: {
     async fetchUsers() {
-      this.loading = true;
-      this.error = null;
+      const token = localStorage.getItem('auth_token');
+
+      if (!token) {
+        console.error('No token found');
+        return;
+      }
+
       try {
-        const response = await axios.get("/api/users");
-        console.log("Fetched users:", response.data);
-        this.users = response.data;
-      } catch (error) {
-        console.error("Error fetching users:", error);
-        this.error = "Failed to fetch users. Please try again later.";
-        if (error.response && error.response.status === 401) {
-          // Redirect to login page if unauthorized
-          window.location.href = "/login";
+        const response = await axios.get('http://127.0.0.1:8000/api/users', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json'
+          }
+        });
+
+        console.log('Fetched users:', response); // Log entire response
+        if (response.headers['content-type'].includes('application/json')) {
+          this.users = response.data;
+        } else {
+          console.error('Unexpected response type:', response.headers['content-type']);
         }
+      } catch (error) {
+        console.error('Error fetching users:', error.response ? error.response.data : error.message);
+        this.error = 'Failed to fetch users. Please try again later.';
       } finally {
         this.loading = false;
       }
     },
+
     editUser(user) {
       console.log("Edit user:", user);
     },
+
     async deleteUser(user) {
       try {
-        await axios.delete(`/api/users/${user.id}`);
-        this.fetchUsers();
+        await axios.delete(`http://127.0.0.1:8000/api/users/${user.id}`, { // Ensure the URL matches the route
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // Include token in header
+            'Accept': 'application/json'
+          }
+        });
+        this.fetchUsers(); // Refresh user list after deletion
       } catch (error) {
         console.error("Error deleting user:", error);
         this.error = "Failed to delete user. Please try again later.";
@@ -96,6 +108,7 @@ export default {
   },
 };
 </script>
+
 
 <style>
 .bi-pencil-square {
