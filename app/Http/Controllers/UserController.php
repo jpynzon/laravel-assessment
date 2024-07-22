@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+/* namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 class UserController extends Controller
 {
     public function index()
-    {
+    {   
         Log::info('User index method called');
         try {
             $users = User::all();
@@ -51,4 +51,4 @@ class UserController extends Controller
             return response()->json(['error' => 'Failed to delete user'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-}
+} */

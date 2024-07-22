@@ -1,113 +1,104 @@
 <template>
   <v-container class="p-5">
     <v-card>
-      <v-card-title class="fw-bold"> Registered Accounts </v-card-title>
+      <div class="navbar d-flex bg-dark">
+        <v-card-title class="fw-bold text-white"> Services Offered </v-card-title>
+        <ItemModal v-model:dialog="showItemModal" />
+      </div>
 
-      <v-table v-if="users.length === 0">
+      <v-table v-if="items.length === 0">
         <thead>
           <tr>
             <th class="text-left fw-bold">ID</th>
             <th class="text-left fw-bold">Name</th>
-            <th class="text-left fw-bold">Email</th>
+            <th class="text-left fw-bold">Description</th>
             <th class="text-left fw-bold">Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="user in users" :key="user.id">
-            <td>{{ user.id }}</td>
-            <td>{{ user.name }}</td>
-            <td>{{ user.email }}</td>
+          <tr v-for="item in items" :key="item.id">
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.description }}</td>
             <td>
-              <i class="bi bi-pencil-square" @click="editUser(user)"></i>
+              <i class="bi bi-pencil-square" @click="editUser(item)"></i>
               |
-              <i class="bi bi-trash-fill" @click="deleteUser(user)"></i>
+              <i class="bi bi-trash-fill" @click="deleteUser(item)"></i>
             </td>
           </tr>
         </tbody>
       </v-table>
 
-      <v-alert v-else-if="!loading" type="info" class="mt-4">No users found.</v-alert>
+      <v-alert v-else-if="!loading" type="info" class="mt-4">No items found.</v-alert>
       <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
       <v-alert v-if="error" type="error" class="mt-4">{{ error }}</v-alert>
 
       <div class="mt-4">
         <h3>Debug Info:</h3>
-        <pre>{{ JSON.stringify(users, null, 2) }}</pre>
+        <pre>{{ JSON.stringify(items, null, 2) }}</pre>
       </div>
     </v-card>
   </v-container>
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
+import ItemModal from './modal.vue';
 
 export default {
-  name: "AdminCp",
+  name: 'AdminCp',
+  components: {
+    ItemModal,
+  },
 
   data() {
     return {
-      users: [],
-      error: null,
-      loading: true,
+      items: [], // Array to hold fetched data
+      loading: true, // Loading state
+      error: null, // Error state
+      showItemModal: false, // Modal visibility
     };
   },
 
-  mounted() {
-    this.fetchUsers();
-  },
-
   methods: {
-    async fetchUsers() {
-      const token = localStorage.getItem('auth_token');
+    openModal() {
+      this.showItemModal = true;
+    },
+    closeModal() {
+      this.showItemModal = false;
+    },
 
-      if (!token) {
-        console.error('No token found');
-        return;
-      }
+    async fetchData() {
+      this.loading = true;
+      this.error = null;
 
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/users', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Accept': 'application/json'
-          }
-        });
-
-        console.log('Fetched users:', response); // Log entire response
-        if (response.headers['content-type'].includes('application/json')) {
-          this.users = response.data;
-        } else {
-          console.error('Unexpected response type:', response.headers['content-type']);
-        }
-      } catch (error) {
-        console.error('Error fetching users:', error.response ? error.response.data : error.message);
-        this.error = 'Failed to fetch users. Please try again later.';
+        const response = await axios.get('/api/items');
+        this.items = response.data;
+      } catch (err) {
+        console.error('Error fetching data:', err);
+        this.error = 'An error occurred while fetching data.';
       } finally {
         this.loading = false;
       }
     },
 
-    editUser(user) {
-      console.log("Edit user:", user);
+    editItem(item) {
+      console.log('Edit item:', item);
     },
 
-    async deleteUser(user) {
-      try {
-        await axios.delete(`http://127.0.0.1:8000/api/users/${user.id}`, { // Ensure the URL matches the route
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('authToken')}`, // Include token in header
-            'Accept': 'application/json'
-          }
-        });
-        this.fetchUsers(); // Refresh user list after deletion
-      } catch (error) {
-        console.error("Error deleting user:", error);
-        this.error = "Failed to delete user. Please try again later.";
-      }
+    deleteItem(item) {
+      console.log('Delete item:', item);
     },
+  },
+
+  created() {
+    this.fetchData();
   },
 };
 </script>
+
+
 
 
 <style>

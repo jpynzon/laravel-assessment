@@ -16,4 +16,3 @@ const logout = () => {
 };
 
 export { isLoggedIn, user, setAuth, logout };
-

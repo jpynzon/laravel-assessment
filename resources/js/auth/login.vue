@@ -20,38 +20,51 @@ import { setAuth } from '../auth';
 
 export default {
   name: 'Login',
+
   data() {
     return {
       email: '',
       password: '',
     };
   },
+
   methods: {
     async login() {
       try {
-        const response = await axios.post('http://127.0.0.1:8000/api/login', {
+        const { data } = await axios.post('http://127.0.0.1:8000/api/login', {
           email: this.email,
           password: this.password
         });
 
-        console.log('Login response:', response.data);
-
-        if (response.data.token) {
-          localStorage.setItem('auth_token', response.data.token);
-          setAuth(response.data.user, response.data.token);
-          this.$router.push('/');
+        if (data.token) {
+          this.handleSuccessfulLogin(data);
         } else {
-          console.error('No token received');
+          this.handleLoginFailure('No token received');
         }
       } catch (error) {
-        console.error('Login failed:', error.response ? error.response.data : error.message);
-        console.error('Response headers:', error.response ? error.response.headers : 'No response headers');
-        console.error('Response status:', error.response ? error.response.status : 'No response status');
+        this.handleLoginFailure(error);
       }
+    },
+
+    handleSuccessfulLogin(data) {
+      localStorage.setItem('auth_token', data.token);
+      setAuth(data.user, data.token);
+      this.redirectHome();
+    },
+
+    handleLoginFailure(error) {
+      console.error('Login failed:', error.response?.data || error.message);
+      console.error('Response headers:', error.response?.headers || 'No response headers');
+      console.error('Response status:', error.response?.status || 'No response status');
+    },
+
+    redirectHome() {
+      window.location.href = '/';
     }
   }
 };
 </script>
+
 
 <style scoped>
 .login {

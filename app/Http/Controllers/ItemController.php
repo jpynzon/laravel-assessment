@@ -1,78 +1,36 @@
-<?php
+<?php 
 
 namespace App\Http\Controllers;
 
-use App\Models\Item;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use App\Models\Item;
 
 class ItemController extends Controller
 {
-    /**
-     * Display a listing of items.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        return response()->json(Item::all());
+        // Fetch all items from the database
+        $items = Item::all();
+        
+        // Return items as JSON response
+        return response()->json($items);
     }
 
-    /**
-     * Store a newly created item in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
+        // Validate the incoming request data
         $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'required|string|max:1000',
+            'description' => 'required|string',
         ]);
 
-        $item = Item::create($request->all());
-        return response()->json($item, Response::HTTP_CREATED);
-    }
-
-    /**
-     * Display the specified item.
-     *
-     * @param  \App\Models\Item  $item
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Item $item)
-    {
-        return response()->json($item);
-    }
-
-    /**
-     * Update the specified item in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Item  $item
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Item $item)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string|max:1000',
+        // Create a new item entry
+        Item::create([
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
         ]);
 
-        $item->update($request->all());
-        return response()->json($item);
-    }
-
-    /**
-     * Remove the specified item from storage.
-     *
-     * @param  \App\Models\Item  $item
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Item $item)
-    {
-        $item->delete();
-        return response()->json(null, Response::HTTP_NO_CONTENT);
+        // Return a success response
+        return response()->json(['status' => 'success', 'message' => 'Item added successfully.']);
     }
 }

@@ -35,30 +35,32 @@ export default {
   },
 
   methods: {
-    signUp() {
+    async signUp() {
       console.log('Sign Up method called');
-      console.log('Name:', this.name);
-      console.log('Email:', this.email);
-      console.log('Password:', this.password);
-      console.log('Confirm Password:', this.password_confirmation);
 
-      axios.post('http://127.0.0.1:8000/register', {
-        name: this.name,
-        email: this.email,
-        password: this.password,
-        password_confirmation: this.password_confirmation
-      }).then(response => {
-        console.log('Signed up successfully', response);
-        // Display alert and redirect to login page
+      try {
+        const response = await axios.post('http://127.0.0.1:8000/register', {
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          password_confirmation: this.password_confirmation
+        });
+
+        console.log('Signed up successfully', response.data);
         alert('Account created successfully! Please log in.');
         this.$router.push('/login');
-      }).catch(error => {
-        console.error('Sign-up error', error.response.data);
-      });
+      } catch (error) {
+        this.handleSignUpError(error);
+      }
+    },
+
+    handleSignUpError(error) {
+      console.error('Sign-up error:', error.response?.data || error.message);
     }
   }
 };
 </script>
+
 
 <style scoped>
 .sign-up {
