@@ -88,6 +88,19 @@
                         </div>
                     </div>
 
+                    <div v-for="item in items" :key="item.id" class="card m-3">
+                        <div class="left p-3">
+                            <div class="icon mb-3">
+                                <img src="../../assets/images/project.svg" class="" height="60px">
+                            </div>
+                            <div class="text-group">
+                                <h5 class="title fw-bold">{{ item.name }}</h5>
+                                <p class="desc">{{ item.description }}</p>
+                                <button class="btn btn-outline-secondary rounded-5">LEARN MORE</button>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -95,8 +108,37 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     name: 'Order',
+
+    data() {
+        return {
+            items: [],
+            loading: false,
+            error: null
+        };
+    },
+
+    methods: {
+        async fetchItems() {
+            this.loading = true;
+            try {
+                const response = await axios.get('/items');
+                this.items = response.data;
+            } catch (error) {
+                this.error = 'Error fetching items';
+                console.error('Error fetching items:', error);
+            } finally {
+                this.loading = false;
+            }
+        },
+    },
+
+    mounted() {
+        this.fetchItems();
+    }
 };
 </script>
 
