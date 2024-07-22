@@ -21,6 +21,8 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
+
+        <div v-if="flashVisible" class="flash-message">{{ flashMessage }}</div>
     </div>
 </template>
 
@@ -40,6 +42,8 @@ export default {
     data() {
         return {
             dialog: false,
+            flashMessage: '',
+            flashVisible: false,
             name: this.item.name || '',
             description: this.item.description || '',
             valid: false,
@@ -66,10 +70,13 @@ export default {
                 });
 
                 console.log('Item updated successfully', response.data);
-                alert('Item updated successfully.');
+                this.flashMessage = 'Item updated successfully.';
+                this.flashVisible = true;
                 this.closeDialog();
                 this.$emit('update');
-                window.location.reload();
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
             } catch (error) {
                 console.error('Submission error:', error.response?.data || error.message);
             }

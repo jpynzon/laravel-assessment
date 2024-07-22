@@ -18,6 +18,8 @@
       </v-card-text>
     </v-card>
   </v-container>
+
+  <div v-if="flashVisible" class="flash-message">{{ flashMessage }}</div>
 </template>
 
 <script>
@@ -28,6 +30,8 @@ export default {
 
   data() {
     return {
+      flashMessage: '',
+      flashVisible: false,
       name: '',
       email: '',
       password: '',
@@ -51,8 +55,12 @@ export default {
         });
 
         console.log('Signed up successfully', response.data);
-        alert('Account created successfully! Please log in.');
-        this.$router.push('/login');
+        this.flashMessage = 'Account created successfully.';
+        this.flashVisible = true;
+        setTimeout(() => {
+          this.$router.push('/login');
+        }, 1000);
+
       } catch (error) {
         this.handleSignUpError(error);
       }
@@ -60,7 +68,7 @@ export default {
 
     handleSignUpError(error) {
       console.error('Sign-up error:', error.response?.data || error.message);
-    }
+    },
   }
 };
 </script>

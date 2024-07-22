@@ -6,14 +6,29 @@
         <CreateModal v-model:dialog="showCreateModal" />
       </div>
 
-      <v-data-table class="w-100" v-if="items.length > 0" :headers="header" :items="items" item-key="id">
-        <template v-slot:item.actions="{ item }">
-          <v-col class="d-flex flex-wrap justify-space-evenly">
-            <EditModal :item="item" />
-            <DeleteModal :item="item" @deleted="fetchItems" />
-          </v-col>
-        </template>
-      </v-data-table>
+      <v-card-text v-if="items.length > 0" item-key="id">
+        <table class="simple-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in items" :key="item.id">
+              <td>{{ item.id }}</td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.description }}</td>
+              <td class="d-flex flex-wrap">
+                <EditModal :item="item" />
+                <DeleteModal :item="item" @deleted="fetchItems" />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </v-card-text>
 
       <v-alert v-else-if="!loading" type="info" class="mt-4">No items found.</v-alert>
       <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
@@ -41,12 +56,6 @@ export default {
   data() {
     return {
       items: [],
-      header: [
-        { text: 'ID', value: 'id' },
-        { text: 'Name', value: 'name' },
-        { text: 'Description', value: 'description' },
-        { text: 'Actions', value: 'actions' }
-      ],
       selectedItem: null,
       loading: false,
       showCreateModal: false,
@@ -97,20 +106,32 @@ export default {
   cursor: pointer;
 }
 
-.v-data-table thead th {
-  background-color: #f4f4f4;
-  color: #000;
-}
-
-.v-data-table td:nth-child(2),
-td:nth-child(1) {
-  font-weight: bold;
-  text-align: center;
-}
-
-.v-data-table td:nth-child(3) {
-  max-width: 50% !important;
+.simple-table {
   width: 100%;
-  overflow: hidden;
+  border-collapse: collapse;
+}
+
+.simple-table th,
+.simple-table td {
+  padding: 8px;
+}
+
+.simple-table th {
+  background-color: #f2f2f2;
+  text-align: left;
+  border-radius: 5px;
+}
+
+.flash-message {
+  background-color: #4caf50;
+  /* Green background */
+  color: white;
+  /* White text */
+  padding: 15px;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  border-radius: 5px;
 }
 </style>

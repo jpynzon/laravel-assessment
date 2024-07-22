@@ -13,6 +13,8 @@
       </v-card-text>
     </v-card>
   </v-container>
+
+  <div v-if="flashVisible" class="flash-message">{{ flashMessage }}</div>
 </template>
 
 <script>
@@ -24,6 +26,8 @@ export default {
 
   data() {
     return {
+      flashMessage: '',
+      flashVisible: false,
       email: '',
       password: '',
       rules: {
@@ -57,10 +61,18 @@ export default {
     },
 
     handleLoginFailure(error) {
-      alert('Login failed: Invalid credentials');
+      this.flashMessage = 'Login failed. Invalid Credentials';
+      this.flashVisible = true;
+      this.hideFlashMessage();
       console.error('Login failed:', error.response?.data || error.message);
       console.error('Response headers:', error.response?.headers || 'No response headers');
       console.error('Response status:', error.response?.status || 'No response status');
+    },
+
+    hideFlashMessage() {
+      setTimeout(() => {
+        this.flashVisible = false;
+      }, 3000);
     },
 
     redirectHome() {
