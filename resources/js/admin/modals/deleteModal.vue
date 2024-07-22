@@ -27,6 +27,8 @@ export default {
         }
     },
 
+    emits: ['deleted'],
+
     data() {
         return {
             dialog: false

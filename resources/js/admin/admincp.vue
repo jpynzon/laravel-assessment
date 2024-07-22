@@ -6,12 +6,12 @@
         <CreateModal v-model:dialog="showCreateModal" />
       </div>
 
-      <v-data-table v-if="items.length > 0" :headers="headers" :items="items" item-key="id">
+      <v-data-table class="w-100" v-if="items.length > 0" :headers="header" :items="items" item-key="id">
         <template v-slot:item.actions="{ item }">
-          <v-tag class="d-flex">
+          <v-col class="d-flex flex-wrap justify-space-evenly">
             <EditModal :item="item" />
             <DeleteModal :item="item" @deleted="fetchItems" />
-          </v-tag>
+          </v-col>
         </template>
       </v-data-table>
 
@@ -41,7 +41,7 @@ export default {
   data() {
     return {
       items: [],
-      headers: [
+      header: [
         { text: 'ID', value: 'id' },
         { text: 'Name', value: 'name' },
         { text: 'Description', value: 'description' },
@@ -95,5 +95,10 @@ export default {
   font-size: 20px;
   color: rgb(255, 55, 55);
   cursor: pointer;
+}
+
+.v-data-table thead th {
+  background-color: #f4f4f4;
+  color: #000;
 }
 </style>

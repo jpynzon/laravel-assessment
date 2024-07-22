@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="isLoggedIn" class="top-nav navbar d-flex p-3 bg-black">
-      <v-text>Welcome, {{ user && user.name ? user.name : 'User' }}</v-text>
+      <span>Welcome!</span>
       <router-link to="/admincp" class="nav-link text-right px-3 text-white">AdminCP</router-link>
     </div>
     <div class="nav-bar bg-light border-bottom">
@@ -50,7 +50,7 @@ export default {
 
       if (isLoggedIn.value) {
         try {
-          const response = await axios.get('/api/user', {
+          const response = await axios.get('/user', {
             headers: {
               'Authorization': `Bearer ${authToken}`,
               'Accept': 'application/json'
@@ -88,12 +88,6 @@ export default {
 
 
 <style scoped>
-.nav-bar {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
 .nav-link:hover {
   background-color: #9EDDFF !important;
 }

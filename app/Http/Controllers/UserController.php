@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 class UserController extends Controller
 {
     public function index()
-    {   
+    {
         Log::info('User index method called');
         try {
             $users = User::all();

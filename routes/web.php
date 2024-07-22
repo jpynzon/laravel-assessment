@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\UserController;
 use App\Models\Item;
 
 /* Route::prefix('api')->group(base_path('routes/api.php')); */
@@ -12,7 +13,6 @@ use App\Models\Item;
 Route::post('api/login', [LoginController::class, 'login']);
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('/add-item', [ItemController::class, 'store']);
-
 
 //Item Controller
 Route::get('/item/{id}', [ItemController::class, 'show'])->name('item.show');
