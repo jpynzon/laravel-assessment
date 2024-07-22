@@ -17,7 +17,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="item in items" :key="item.id">
+            <tr v-for="item in paginatedItems" :key="item.id">
               <td>{{ item.id }}</td>
               <td>{{ item.name }}</td>
               <td>{{ item.description }}</td>
@@ -28,6 +28,16 @@
             </tr>
           </tbody>
         </table>
+
+        <div class="pagination mt-5 justify-center">
+          <button @click="prevPage" :disabled="currentPage === 1">←</button>
+          <button v-for="page in totalPages" :key="page" @click="changePage(page)"
+            :class="{ 'active': currentPage === page }">
+            {{ page }}
+          </button>
+          <button @click="nextPage" :disabled="currentPage === totalPages">→</button>
+        </div>
+
       </v-card-text>
 
       <v-alert v-else-if="!loading" type="info" class="mt-4">No items found.</v-alert>
@@ -59,8 +69,21 @@ export default {
       selectedItem: null,
       loading: false,
       showCreateModal: false,
-      error: null
+      error: null,
+      currentPage: 1,
+      itemsPerPage: 5,
     };
+  },
+
+  computed: {
+    totalPages() {
+      return Math.ceil(this.items.length / this.itemsPerPage);
+    },
+    paginatedItems() {
+      const start = (this.currentPage - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.items.slice(start, end);
+    }
   },
 
   methods: {
@@ -85,6 +108,20 @@ export default {
       this.selectedItem = item;
       this.$refs.editModal.openDialog();
     },
+
+    changePage(page) {
+      this.currentPage = page;
+    },
+    prevPage() {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    },
+    nextPage() {
+      if (this.currentPage < this.totalPages) {
+        this.currentPage++;
+      }
+    }
   },
 
   created() {
@@ -122,11 +159,28 @@ export default {
   border-radius: 5px;
 }
 
+.pagination button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ddd;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background-color: #4caf50;
+  color: white;
+}
+
+.pagination button:disabled {
+  background-color: #eee;
+  cursor: not-allowed;
+}
+
 .flash-message {
   background-color: #4caf50;
-  /* Green background */
   color: white;
-  /* White text */
   padding: 15px;
   position: fixed;
   top: 20px;

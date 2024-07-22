@@ -22,6 +22,8 @@
             </v-card>
         </v-dialog>
     </div>
+
+    <div v-if="flashVisible" class="flash-message">{{ flashMessage }}</div>
 </template>
 
 <script>
@@ -33,6 +35,8 @@ export default {
     data() {
         return {
             dialog: false,
+            flashMessage: '',
+            flashVisible: false,
             name: '',
             description: '',
             rules: {
@@ -58,8 +62,11 @@ export default {
                 });
 
                 console.log('Item added successfully', response.data);
-                alert('Item added successfully.');
-                window.location.reload();
+                this.flashMessage = 'Item updated successfully.';
+                this.flashVisible = true;
+                setTimeout(() => {
+                    window.location.reload();
+                }, 1000);
             } catch (error) {
                 console.error('Submission error:', error.response?.data || error.message);
             }
