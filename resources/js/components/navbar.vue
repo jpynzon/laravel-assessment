@@ -10,10 +10,9 @@
           <img id="logoImage" src="../../assets/images/logo.png" :style="logoStyle">
         </div>
         <nav class="nav-menu d-flex">
-          <router-link to="/" class="nav-link p-3" :class="{ active: isActive('/') }">HOME</router-link>
-          <router-link to="/order" class="nav-link p-3" :class="{ active: isActive('/order') }">SERVICES</router-link>
-          <router-link to="/contact" class="nav-link p-3"
-            :class="{ active: isActive('/contact') }">CONTACT</router-link>
+          <router-link to="/" class="nav-link p-3">HOME</router-link>
+          <router-link to="/order" class="nav-link p-3">SERVICES</router-link>
+          <router-link to="/contact" class="nav-link p-3">CONTACT</router-link>
           <router-link v-if="!isLoggedIn" to="/signup" class="nav-link p-3 bg-blue text-white">JOIN NOW</router-link>
           <a v-else @click.prevent="logout" class="nav-link p-3 bg-blue text-white">LOG OUT</a>
         </nav>
@@ -93,10 +92,6 @@ export default {
   position: sticky;
   top: 0;
   z-index: 1000;
-}
-
-.active {
-  font-weight: bold;
 }
 
 .nav-link:hover {

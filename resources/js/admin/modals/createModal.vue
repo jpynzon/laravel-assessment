@@ -4,7 +4,7 @@
 
         <v-dialog v-model="dialog" max-width="600px">
             <v-card>
-                <v-card-title class="headline">Add Services</v-card-title>
+                <v-card-title class="headline fw-bold">Add Services</v-card-title>
                 <v-card-subtitle>Enter the details of the new item</v-card-subtitle>
                 <v-card-text>
                     <v-form ref="form" v-model="valid">
@@ -28,7 +28,7 @@
 import axios from 'axios';
 
 export default {
-    name: 'ItemModal',
+    name: 'CreateModal',
 
     data() {
         return {

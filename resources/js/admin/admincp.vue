@@ -2,104 +2,87 @@
   <v-container class="p-5">
     <v-card>
       <div class="navbar d-flex bg-dark">
-        <v-card-title class="fw-bold text-white"> Services Offered </v-card-title>
-        <ItemModal v-model:dialog="showItemModal" />
+        <v-card-title class="fw-bold text-white">Services Offered</v-card-title>
+        <CreateModal v-model:dialog="showCreateModal" />
       </div>
 
-      <v-table v-if="items.length === 0">
-        <thead>
-          <tr>
-            <th class="text-left fw-bold">ID</th>
-            <th class="text-left fw-bold">Name</th>
-            <th class="text-left fw-bold">Description</th>
-            <th class="text-left fw-bold">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in items" :key="item.id">
-            <td>{{ item.id }}</td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.description }}</td>
-            <td>
-              <i class="bi bi-pencil-square" @click="editUser(item)"></i>
-              |
-              <i class="bi bi-trash-fill" @click="deleteUser(item)"></i>
-            </td>
-          </tr>
-        </tbody>
-      </v-table>
+      <v-data-table v-if="items.length > 0" :headers="headers" :items="items" item-key="id">
+        <template v-slot:item.actions="{ item }">
+          <v-tag class="d-flex">
+            <EditModal :item="item" />
+            <DeleteModal :item="item" @deleted="fetchItems" />
+          </v-tag>
+        </template>
+      </v-data-table>
 
       <v-alert v-else-if="!loading" type="info" class="mt-4">No items found.</v-alert>
       <v-progress-circular v-if="loading" indeterminate color="primary"></v-progress-circular>
       <v-alert v-if="error" type="error" class="mt-4">{{ error }}</v-alert>
-
-      <div class="mt-4">
-        <h3>Debug Info:</h3>
-        <pre>{{ JSON.stringify(items, null, 2) }}</pre>
-      </div>
     </v-card>
+
+    <!-- Include the EditModal component -->
+    <edit-modal v-if="selectedItem" :item="selectedItem" @update="fetchItems" ref="editModal" />
   </v-container>
 </template>
 
 <script>
 import axios from 'axios';
-import ItemModal from './modal.vue';
+import EditModal from './modals/editModal.vue';
+import DeleteModal from './modals/deleteModal.vue';
+import CreateModal from './modals/createModal.vue';
 
 export default {
-  name: 'AdminCp',
   components: {
-    ItemModal,
+    EditModal,
+    CreateModal,
+    DeleteModal
   },
 
   data() {
     return {
-      items: [], // Array to hold fetched data
-      loading: true, // Loading state
-      error: null, // Error state
-      showItemModal: false, // Modal visibility
+      items: [],
+      headers: [
+        { text: 'ID', value: 'id' },
+        { text: 'Name', value: 'name' },
+        { text: 'Description', value: 'description' },
+        { text: 'Actions', value: 'actions' }
+      ],
+      selectedItem: null,
+      loading: false,
+      showCreateModal: false,
+      error: null
     };
   },
 
   methods: {
-    openModal() {
-      this.showItemModal = true;
-    },
-    closeModal() {
-      this.showItemModal = false;
-    },
-
-    async fetchData() {
+    async fetchItems() {
       this.loading = true;
-      this.error = null;
-
       try {
-        const response = await axios.get('/api/items');
+        const response = await axios.get('/items');
         this.items = response.data;
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        this.error = 'An error occurred while fetching data.';
+      } catch (error) {
+        this.error = 'Error fetching items';
+        console.error('Error fetching items:', error);
       } finally {
         this.loading = false;
       }
     },
 
-    editItem(item) {
-      console.log('Edit item:', item);
+    openCreateModal() {
+      this.$refs.createModal.openDialog();
     },
 
-    deleteItem(item) {
-      console.log('Delete item:', item);
+    editItem(item) {
+      this.selectedItem = item;
+      this.$refs.editModal.openDialog();
     },
   },
 
   created() {
-    this.fetchData();
-  },
+    this.fetchItems();
+  }
 };
 </script>
-
-
-
 
 <style>
 .bi-pencil-square {

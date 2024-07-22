@@ -4,8 +4,9 @@
       <v-card-title tag="h1" class="fw-bold">Login</v-card-title>
       <v-card-text>
         <v-form @submit.prevent="login">
-          <v-text-field v-model="email" label="Email" required></v-text-field>
-          <v-text-field v-model="password" label="Password" type="password" required></v-text-field>
+          <v-text-field v-model="email" label="Email" :rules="[rules.required]" required></v-text-field>
+          <v-text-field v-model="password" label="Password" :rules="[rules.required]" type="password"
+            required></v-text-field>
           <p> Don't Have an Account? <router-link to="/signup">Create an Account</router-link> </p>
           <v-btn color="primary" type="submit">Login</v-btn>
         </v-form>
@@ -25,6 +26,9 @@ export default {
     return {
       email: '',
       password: '',
+      rules: {
+        required: value => !!value || 'Required.',
+      },
     };
   },
 
@@ -53,6 +57,7 @@ export default {
     },
 
     handleLoginFailure(error) {
+      alert('Login failed: Invalid credentials');
       console.error('Login failed:', error.response?.data || error.message);
       console.error('Response headers:', error.response?.headers || 'No response headers');
       console.error('Response status:', error.response?.status || 'No response status');

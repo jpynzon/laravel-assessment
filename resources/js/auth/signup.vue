@@ -1,14 +1,15 @@
 <template>
   <v-container class="d-flex justify-center p-5">
-    <v-card class="w-50">
+    <v-card class="w-100">
       <v-card-title tag="h1" class="fw-bold">Sign Up</v-card-title>
       <v-card-text>
         <v-form @submit.prevent="signUp">
-          <v-text-field v-model="name" label="Name" required></v-text-field>
-          <v-text-field v-model="email" label="Email" required></v-text-field>
-          <v-text-field v-model="password" label="Password" type="password" required></v-text-field>
-          <v-text-field v-model="password_confirmation" label="Confirm Password" type="password"
+          <v-text-field v-model="name" label="Name" :rules="[rules.required]" required></v-text-field>
+          <v-text-field v-model="email" label="Email" :rules="[rules.required]" required></v-text-field>
+          <v-text-field v-model="password" label="Password" :rules="[rules.required]" type="password"
             required></v-text-field>
+          <v-text-field v-model="password_confirmation" label="Confirm Password" :rules="[rules.required]"
+            type="password" required></v-text-field>
 
           <p> Already have an account? <router-link to="/login">Login</router-link> </p>
 
@@ -31,6 +32,9 @@ export default {
       email: '',
       password: '',
       password_confirmation: '',
+      rules: {
+        required: value => !!value || 'Required.',
+      },
     };
   },
 
