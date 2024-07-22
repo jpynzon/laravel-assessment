@@ -4,7 +4,7 @@
     <v-dialog v-model="dialog" max-width="400px">
         <v-card>
             <v-card-title class="headline">Confirm Deletion</v-card-title>
-            <v-card-subtitle>Are you sure you want to delete this item?</v-card-subtitle>
+            <v-card-subtitle>Are you sure you want to delete <b>{{ item.name }}</b>?</v-card-subtitle>
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn text @click="closeDialog">Cancel</v-btn>

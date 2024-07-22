@@ -101,4 +101,16 @@ export default {
   background-color: #f4f4f4;
   color: #000;
 }
+
+.v-data-table td:nth-child(2),
+td:nth-child(1) {
+  font-weight: bold;
+  text-align: center;
+}
+
+.v-data-table td:nth-child(3) {
+  max-width: 50% !important;
+  width: 100%;
+  overflow: hidden;
+}
 </style>
